@@ -1,5 +1,7 @@
 package gocr_math 
 
+import "../gocr_math"
+
 import "testing"
 func TestRand(t *testing.T) {
   for i:= 0; i < 100; i++ { 

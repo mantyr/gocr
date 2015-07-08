@@ -7,7 +7,7 @@ import (
 
 // Random weight between -0.2 and 0.2
 func Rand() float64 {
-  return rand.NormFloat64() * 0.4 - 0.2
+  return rand.Float64() * 0.4 - 0.2
 }
 
 // Mean squared error

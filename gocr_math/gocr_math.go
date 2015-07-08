@@ -20,6 +20,12 @@ func MSE(errors []float64) float64 {
   return sum / float64(len(errors))
 }
 
+func Round(n float64) float64 {
+  if n < 0 {
+    return math.Ceil(n-0.5)
+  }
+  return math.Floor(n+0.5)
+}
 
 func Sum(array []float64) float64 {
   sum := 0.0

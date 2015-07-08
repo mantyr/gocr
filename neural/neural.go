@@ -3,6 +3,7 @@ package neural
 import (
   "math/rand"
   "../gocr_math"
+  "fmt"
 )
 
 type Neuron struct {
@@ -66,17 +67,17 @@ func Build_Layer(numNeurons int, numInputs int) Layer {
 
 type Network struct {
   Layers []Layer
-  errorThresshold float64
+  errorThreshold float64
   trainingIterations int
-  earningRate float64
+  learningRate float64
 }
 
 func Build_Network() Network {
   return Network { 
     Layers: make([]Layer, 0, 10),
-    errorThresshold: 0.00001,
+    errorThreshold: 0.00001,
     trainingIterations: 500000,
-    earningRate: 0.03,
+    learningRate: 0.03,
   }
 }
 
@@ -98,12 +99,12 @@ func (n *Network) AddLayer(numNeurons int, numInputs int) {
   n.Layers = append(n.Layers, Build_Layer(numNeurons, numInputs))
 }
 
-func (n *Network) train(examples [][]float64)  {
+func (n *Network) Train(examples [][][]float64)  {
   outputLayer := n.Layers[len(n.Layers)-1]
 
   for iter := 0; iter < n.trainingIterations; iter++ {
     
-    for i, example := range examples  {
+    for _, example := range examples  {
       inputs := example[0]
       targets := example[1]
 
@@ -116,43 +117,37 @@ func (n *Network) train(examples [][]float64)  {
 
       for l_index := len(n.Layers) - 2; l_index >= 0; l_index-- {
         for k, neuron :=  range n.Layers[l_index].Neurons {
-/*
-//NOTE: Translate this into Go code!
-
-          neuron.error = math.sum(this.layers[l + 1].neurons.
-                                  map(function(n) { return n.weights[j] * n.delta }))
+          var tmpError []float64
+          for _, neuron := range n.Layers[l_index+1].Neurons {
+            tmpError = append(tmpError, neuron.Weights[k] * neuron.delta)
+          }
+          neuron.error = gocr_math.Sum(tmpError)
+          fmt.Println(tmpError)
           neuron.delta = neuron.lastOutput * (1 - neuron.lastOutput) * neuron.error
 
-          for (var i = 0; i < this.layers[l + 1].neurons.length; i++) {
-            var neuron = this.layers[l + 1].neurons[i]
-
-            for (var w = 0; w < neuron.weights.length; w++) {
-              neuron.weights[w] += this.learningRate * neuron.lastIntputs[w] * neuron.delta
+          for _, inner_neuron := range n.Layers[l_index+1].Neurons {
+            for w := 0; w < len(inner_neuron.Weights); w++  {
+              inner_neuron.Weights[w] += n.learningRate * inner_neuron.lastInputs[w] * inner_neuron.delta
             }
-            neuron.bias += this.learningRate * neuron.delta
+            inner_neuron.Bias += n.learningRate * inner_neuron.delta
           }
         }
       }
-    }
 
-    var error = math.mse(outputLayer.neurons.
-                         map(function(n) { return n.error }))
+      var neuronErrors []float64
+      for _, neuron := range outputLayer.Neurons {
+        neuronErrors = append(neuronErrors, neuron.error)
+      }
+      fmt.Println(neuronErrors)
+      mse := gocr_math.MSE(neuronErrors)
 
-    if (it % 10000 === 0) {
-      console.log({ iteration: it, mse: error })
-    }
-
-    if (error <= this.errorThreshold) {
-      return
-    }
-    
-  }
-*/
-        }
+      if iter % 10000 ==0 {
+        fmt.Println("iteration: ", iter, " mse: ", mse)
       }
 
+      if mse <= n.errorThreshold {
+        return
+      }
     }
   }
-
 }
-

@@ -1,4 +1,4 @@
-package main
+package gocr_math 
 
 import (
   "math/rand"

@@ -6,6 +6,10 @@ import (
   "fmt"
 )
 
+type Processor interface {
+  Process([]float64) []float64 
+}
+
 type Neuron struct {
   Weights []float64
   Bias float64
@@ -45,16 +49,6 @@ type Layer struct {
   Neurons []Neuron
 }
 
-func (l *Layer) Process(inputs []float64) []float64{
-  var tmp []float64
-
-  for i, _ := range l.Neurons {
-    tmp = append(tmp, l.Neurons[i].Process(inputs))
-  }
-
-  return tmp
-}
-
 func Build_Layer(numNeurons int, numInputs int) Layer {
   l := Layer{Neurons: make([]Neuron, 0, numNeurons)}
 
@@ -63,6 +57,16 @@ func Build_Layer(numNeurons int, numInputs int) Layer {
   }
 
   return l
+}
+
+func (l *Layer) Process(inputs []float64) []float64{
+  var tmp []float64
+
+  for i, _ := range l.Neurons {
+    tmp = append(tmp, l.Neurons[i].Process(inputs))
+  }
+
+  return tmp
 }
 
 type Network struct {
@@ -138,7 +142,6 @@ func (n *Network) Train(examples [][][]float64)  {
       for _, neuron := range outputLayer.Neurons {
         neuronErrors = append(neuronErrors, neuron.error)
       }
-      fmt.Println(neuronErrors)
       mse := gocr_math.MSE(neuronErrors)
 
       if iter % 10000 ==0 {

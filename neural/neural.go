@@ -115,8 +115,8 @@ func (n *Network) Train(examples [][][]float64)  {
       outputs := n.Process(inputs)
 
       for j, neuron := range outputLayer.Neurons {
-        neuron.error = targets[j] - outputs[j]
-        neuron.delta = neuron.lastOutput * (1 - neuron.lastOutput) * neuron.error
+        outputLayer.Neurons[j].error = targets[j] - outputs[j]
+        outputLayer.Neurons[j].delta = neuron.lastOutput * (1 - neuron.lastOutput) * neuron.error
       }
 
       for l_index := len(n.Layers) - 2; l_index >= 0; l_index-- {
@@ -126,7 +126,6 @@ func (n *Network) Train(examples [][][]float64)  {
             tmpError = append(tmpError, neuron.Weights[k] * neuron.delta)
           }
           neuron.error = gocr_math.Sum(tmpError)
-          fmt.Println(tmpError)
           neuron.delta = neuron.lastOutput * (1 - neuron.lastOutput) * neuron.error
 
           for _, inner_neuron := range n.Layers[l_index+1].Neurons {
@@ -137,20 +136,20 @@ func (n *Network) Train(examples [][][]float64)  {
           }
         }
       }
+    }
 
-      var neuronErrors []float64
-      for _, neuron := range outputLayer.Neurons {
-        neuronErrors = append(neuronErrors, neuron.error)
-      }
-      mse := gocr_math.MSE(neuronErrors)
+    var neuronErrors []float64
+    for _, neuron := range outputLayer.Neurons {
+      neuronErrors = append(neuronErrors, neuron.error)
+    }
+    mse := gocr_math.MSE(neuronErrors)
 
-      if iter % 10000 ==0 {
-        fmt.Println("iteration: ", iter, " mse: ", mse)
-      }
+    if iter % 10000 == 0 {
+      fmt.Println("iteration: ", iter, " mse: ", mse)
+    }
 
-      if mse <= n.errorThreshold {
-        return
-      }
+    if mse <= n.errorThreshold {
+      return
     }
   }
 }

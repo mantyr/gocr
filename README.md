@@ -7,7 +7,8 @@ Toy OCR written in go using neural networks
 The data that we train with is a 3-dimension array of floats.
 Each element is a 2-dimension array of floats, called a __training set__.
 The first element of a __training set__ is the 4 x 5 matrix representation of a number like:
-`
+
+```go
 		[]float64{
 			1, 1, 1, 0,
 			0, 0, 0, 1,
@@ -15,7 +16,8 @@ The first element of a __training set__ is the 4 x 5 matrix representation of a 
 			0, 0, 0, 1,
 			1, 1, 1, 0,
 		}
-`
+```
+
 Can you see the 3?
 
 The second element of a __training set__ the decimal representation of this number

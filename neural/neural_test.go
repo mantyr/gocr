@@ -40,6 +40,12 @@ func TestBuildNeuron(t *testing.T) {
       t.Errorf("Expected %v weights, got: %v ", size, len(n.Weights))
     }
 
+    for _, w := range n.Weights {
+      if w == 0 {
+        t.Errorf("Expected non-zero weight, got zero")
+      }
+    }
+
     if n.Bias == 0 {
       t.Errorf("Neuron should have bias")
     }
@@ -88,3 +94,9 @@ func TestLayerProcess(t *testing.T) {
     }
   }
 }
+
+func TestBuildNetwork(t *testing.T) {
+  //_ := Build_Network()
+
+}
+

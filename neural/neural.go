@@ -80,7 +80,7 @@ func Build_Network() Network {
   return Network { 
     Layers: make([]Layer, 0, 10),
     errorThreshold: 0.00001,
-    trainingIterations: 500000,
+    trainingIterations: 100000,
     learningRate: 0.03,
   }
 }
@@ -107,28 +107,34 @@ func (n *Network) Train(examples [][][]float64)  {
   outputLayer := n.Layers[len(n.Layers)-1]
 
   for iter := 0; iter < n.trainingIterations; iter++ {
-    
+
     for _, example := range examples  {
       inputs := example[0]
       targets := example[1]
 
       outputs := n.Process(inputs)
 
-      for j, neuron := range outputLayer.Neurons {
-        outputLayer.Neurons[j].error = targets[j] - outputs[j]
-        outputLayer.Neurons[j].delta = neuron.lastOutput * (1 - neuron.lastOutput) * neuron.error
+      for i, _ := range outputLayer.Neurons {
+        neuron := &outputLayer.Neurons[i]
+
+        neuron.error = targets[i] - outputs[i]
+        neuron.delta = neuron.lastOutput * (1 - neuron.lastOutput) * neuron.error
       }
 
       for l_index := len(n.Layers) - 2; l_index >= 0; l_index-- {
-        for k, neuron :=  range n.Layers[l_index].Neurons {
+        for j, _:=  range n.Layers[l_index].Neurons {
+          neuron :=  &n.Layers[l_index].Neurons[j]
+
           var tmpError []float64
-          for _, neuron := range n.Layers[l_index+1].Neurons {
-            tmpError = append(tmpError, neuron.Weights[k] * neuron.delta)
+          for _, tmp_neuron := range n.Layers[l_index+1].Neurons {
+            tmpError = append(tmpError, tmp_neuron.Weights[j] * tmp_neuron.delta)
           }
           neuron.error = gocr_math.Sum(tmpError)
           neuron.delta = neuron.lastOutput * (1 - neuron.lastOutput) * neuron.error
 
-          for _, inner_neuron := range n.Layers[l_index+1].Neurons {
+          for k, _ := range n.Layers[l_index+1].Neurons {
+            inner_neuron := &n.Layers[l_index+1].Neurons[k]
+
             for w := 0; w < len(inner_neuron.Weights); w++  {
               inner_neuron.Weights[w] += n.learningRate * inner_neuron.lastInputs[w] * inner_neuron.delta
             }
@@ -139,6 +145,7 @@ func (n *Network) Train(examples [][][]float64)  {
     }
 
     var neuronErrors []float64
+
     for _, neuron := range outputLayer.Neurons {
       neuronErrors = append(neuronErrors, neuron.error)
     }

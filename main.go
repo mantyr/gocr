@@ -6,7 +6,6 @@ import (
   "./gocr_math"
 )
 
-var network Network = Build_Network()
 
 var zero = []float64{
   0, 1, 1, 0,
@@ -17,7 +16,7 @@ var zero = []float64{
 }
 
 var one = []float64{
-  0, 1, 1, 0,
+  0, 0, 1, 0,
   0, 0, 1, 0,
   0, 0, 1, 0,
   0, 0, 1, 0,
@@ -47,18 +46,18 @@ var dataset = [][][]float64{
   { three, { 1, 1 } },
 }
 
-
 var matrix = []float64{
   1,1,1,1,
   1,0,0,1,
   1,0,0,1,
   1,0,0,1,
-  1,1,1,1,
+  1,1,1,0,
 }
 
 // Convert the outpput to binary and then to deimal
 
 func main() {
+  network := Build_Network()
   network.AddLayer(10, 20) // Hidden layer
   network.AddLayer(2, 10) // Output layer, defaults to previous layers ouputs: 10
   network.Train(dataset)

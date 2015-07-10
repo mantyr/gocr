@@ -31,7 +31,7 @@ Layers accept a number of inputs and outputs: `AddLayer(outputs, inputs)`
 Succeeding layers should contain an identical number of inputs as the preceding layers ouputs, like so:
 
 ```go
-	network := Build_Network()
+	network := NewNetwork()
 
     // 20 inputs (4 x 5 matrix == 20 inputs), 10 outputs
 	network.AddLayer(10, 20) 
@@ -182,7 +182,7 @@ var testData = []struct {
 // Convert the outpput to binary and then to deimal
 
 func main() {
-	network := Build_Network()
+	network := NewNetwork()
 	network.AddLayer(10, 20) // Hidden layer
 	network.AddLayer(2, 10)  // Output layer, defaults to previous layers ouputs: 10
 	network.Train(trainingData)

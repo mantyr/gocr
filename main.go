@@ -116,7 +116,7 @@ var testData = []struct {
 // Convert the outpput to binary and then to deimal
 
 func main() {
-	network := Build_Network()
+	network := NewNetwork()
 	network.AddLayer(10, 20) // Hidden layer
 	network.AddLayer(2, 10)  // Output layer, defaults to previous layers ouputs: 10
 	network.Train(trainingData)

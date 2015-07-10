@@ -15,7 +15,7 @@ type Neuron struct {
 	delta      float64
 }
 
-func Build_Neuron(numInputs int) *Neuron {
+func NewNeuron(numInputs int) *Neuron {
 	n := Neuron{
 		Weights: make([]float64, 0, numInputs),
 		Bias:    rand.Float64(),
@@ -45,11 +45,11 @@ type Layer struct {
 	Neurons []*Neuron
 }
 
-func Build_Layer(numNeurons int, numInputs int) *Layer {
+func NewLayer(numNeurons int, numInputs int) *Layer {
 	l := Layer{Neurons: make([]*Neuron, 0, numNeurons)}
 
 	for i := 0; i < cap(l.Neurons); i++ {
-		l.Neurons = append(l.Neurons, Build_Neuron(numInputs))
+		l.Neurons = append(l.Neurons, NewNeuron(numInputs))
 	}
 
 	return &l
@@ -72,7 +72,7 @@ type Network struct {
 	learningRate       float64
 }
 
-func Build_Network() *Network {
+func NewNetwork() *Network {
 	return &Network{
 		Layers:             make([]*Layer, 0, 10),
 		errorThreshold:     0.00001,
@@ -96,7 +96,7 @@ func (n *Network) AddLayer(numNeurons int, numInputs int) {
 		numInputs = len(previousLayer.Neurons)
 	}
 
-	n.Layers = append(n.Layers, Build_Layer(numNeurons, numInputs))
+	n.Layers = append(n.Layers, NewLayer(numNeurons, numInputs))
 }
 
 func (n *Network) Train(examples [][][]float64) {

@@ -8,7 +8,7 @@ type MockProcessor struct {
 	retvals []float64
 }
 
-func Build_MockProcessor(vals []float64) MockProcessor {
+func NewMockProcessor(vals []float64) MockProcessor {
 	return MockProcessor{retvals: vals}
 }
 
@@ -35,7 +35,7 @@ var sizes = []int{1, 2, 5, 9, 13, 20, 21}
 func TestBuildNeuron(t *testing.T) {
 	var n *Neuron
 	for _, size := range sizes {
-		n = Build_Neuron(size)
+		n = NewNeuron(size)
 
 		if len(n.Weights) != size {
 			t.Errorf("Expected %v weights, got: %v ", size, len(n.Weights))
@@ -56,7 +56,7 @@ func TestBuildNeuron(t *testing.T) {
 func TestNeuronProcess(t *testing.T) {
 	vals := []float64{5, 10}
 
-	n := Build_Neuron(2)
+	n := NewNeuron(2)
 	n.Weights[0] = 2
 	n.Weights[1] = 2
 	n.Bias = 10
@@ -73,7 +73,7 @@ func TestNeuronProcess(t *testing.T) {
 }
 
 func TestBuildLayer(t *testing.T) {
-	l := Build_Layer(2, 3)
+	l := NewLayer(2, 3)
 
 	if len(l.Neurons) != 2 {
 		t.Errorf("Exp 2 neurons, got: %v", len(l.Neurons))
@@ -86,7 +86,7 @@ func TestBuildLayer(t *testing.T) {
 
 func TestLayerProcess(t *testing.T) {
 	inputs := []float64{1, 0}
-	l := Build_Layer(2, 3)
+	l := NewLayer(2, 3)
 	retvals := l.Process(inputs)
 
 	for _, val := range retvals {
@@ -97,7 +97,7 @@ func TestLayerProcess(t *testing.T) {
 }
 
 func TestBuildNetwork(t *testing.T) {
-	n := Build_Network()
+	n := NewNetwork()
 
 	if (cap(n.Layers)) < 10 {
 		t.Errorf("Expected at least %v layers, got %v", 10, cap(n.Layers))
@@ -108,7 +108,7 @@ func TestNetworkProcess(t *testing.T) {
 
 	inputs := []float64{1, 0}
 
-	n := Build_Network()
+	n := NewNetwork()
 
 	retvals := n.Process(inputs)
 	if len(retvals) == 0 {
@@ -123,7 +123,7 @@ func TestNetworkProcess(t *testing.T) {
 }
 
 func TestNetworkAddLayer(t *testing.T) {
-	n := Build_Network()
+	n := NewNetwork()
 
 	for i := 0; i < 10; i++ {
 		n.AddLayer(0, 1)

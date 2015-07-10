@@ -96,7 +96,39 @@ func TestLayerProcess(t *testing.T) {
 }
 
 func TestBuildNetwork(t *testing.T) {
-  //_ := Build_Network()
+  n := Build_Network()
 
+  if (cap(n.Layers)) < 10 {
+    t.Errorf("Expected at least %v layers, got %v", 10, cap(n.Layers))
+  }
+}
+
+func TestNetworkProcess(t *testing.T) {
+
+  inputs := []float64{ 1, 0 }
+
+  n := Build_Network()
+  
+  retvals := n.Process(inputs)
+  if len(retvals) == 0 {
+    //t.Errorf("Expect a value greater than 0, got 0")
+  }
+
+  for _, val := range retvals{ 
+    if (val == 0 ) {
+      t.Errorf("Expect a value greater than 0, got 0")
+    }
+  }
+}
+
+func TestNetworkAddLayer(t *testing.T) {
+  n := Build_Network()
+
+  for i := 0; i < 10; i++ {
+    n.AddLayer(0, 1)
+    if len(n.Layers) != i + 1 {
+      t.Errorf("Expect %v, got %v", len(n.Layers), i)
+    }
+  }
 }
 

@@ -47,11 +47,11 @@ var dataset = [][][]float64{
 }
 
 var matrix = []float64{
-  1,1,1,1,
-  1,0,0,1,
-  1,0,0,1,
-  1,0,0,1,
-  1,1,1,0,
+  1, 1, 1, 1,
+  1, 0, 0, 1,
+  1, 0, 0, 1,
+  1, 0, 0, 1,
+  1, 1, 1, 0,
 }
 
 // Convert the outpput to binary and then to deimal

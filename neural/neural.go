@@ -80,7 +80,7 @@ func Build_Network() Network {
   return Network { 
     Layers: make([]Layer, 0, 10),
     errorThreshold: 0.00001,
-    trainingIterations: 100000,
+    trainingIterations: 200000,
     learningRate: 0.03,
   }
 }

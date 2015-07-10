@@ -7,54 +7,53 @@ import (
 	"math"
 )
 
-var zero = []float64{
-	0, 1, 1, 0,
-	1, 0, 0, 1,
-	1, 0, 0, 1,
-	1, 0, 0, 1,
-	0, 1, 1, 0,
-}
-var zero1 = []float64{
-	1, 1, 1, 1,
-	1, 0, 0, 1,
-	1, 0, 0, 1,
-	1, 0, 0, 1,
-	1, 1, 1, 1,
+// matrix of number, binary representation of number
+var trainingData = [][][]float64{
+	{
+		[]float64{
+			0, 1, 1, 0,
+			1, 0, 0, 1,
+			1, 0, 0, 1,
+			1, 0, 0, 1,
+			0, 1, 1, 0,
+		}, {0, 0}},
+	{
+		[]float64{
+			1, 1, 1, 1,
+			1, 0, 0, 1,
+			1, 0, 0, 1,
+			1, 0, 0, 1,
+			1, 1, 1, 1,
+		}, {0, 0}},
+
+	{
+		[]float64{
+			0, 0, 1, 0,
+			0, 0, 1, 0,
+			0, 0, 1, 0,
+			0, 0, 1, 0,
+			0, 0, 1, 0,
+		}, {0, 0}},
+	{
+		[]float64{
+			0, 1, 1, 0,
+			1, 0, 0, 1,
+			0, 0, 1, 0,
+			0, 1, 0, 0,
+			1, 1, 1, 1,
+		}, {0, 0}},
+
+	{
+		[]float64{
+			1, 1, 1, 1,
+			0, 0, 0, 1,
+			0, 1, 1, 1,
+			0, 0, 0, 1,
+			1, 1, 1, 1,
+		}, {0, 0}},
 }
 
-var one = []float64{
-	0, 0, 1, 0,
-	0, 0, 1, 0,
-	0, 0, 1, 0,
-	0, 0, 1, 0,
-	0, 0, 1, 0,
-}
-
-var two = []float64{
-	0, 1, 1, 0,
-	1, 0, 0, 1,
-	0, 0, 1, 0,
-	0, 1, 0, 0,
-	1, 1, 1, 1,
-}
-
-var three = []float64{
-	1, 1, 1, 1,
-	0, 0, 0, 1,
-	0, 1, 1, 1,
-	0, 0, 0, 1,
-	1, 1, 1, 1,
-}
-
-var dataset = [][][]float64{
-	{zero1, {0, 0}},
-	{zero, {0, 0}},
-	{one, {0, 1}},
-	{two, {1, 0}},
-	{three, {1, 1}},
-}
-
-var someData = []struct {
+var testData = []struct {
 	matrix  []float64
 	decimal int
 }{
@@ -120,12 +119,12 @@ func main() {
 	network := Build_Network()
 	network.AddLayer(10, 20) // Hidden layer
 	network.AddLayer(2, 10)  // Output layer, defaults to previous layers ouputs: 10
-	network.Train(dataset)
+	network.Train(trainingData)
 	fmt.Println("\n\nTrained the data set")
 
-	for _, sumStruct := range someData {
+	for _, data := range testData {
 
-		outputs := network.Process(sumStruct.matrix)
+		outputs := network.Process(data.matrix)
 
 		var binary []float64
 		for _, i := range outputs {
@@ -140,6 +139,6 @@ func main() {
 		}
 
 		//var decimal = parseInt(binary, 2)
-		fmt.Printf("Expected %v, got %v (binary: %v\n", sumStruct.decimal, decimal, binary)
+		fmt.Printf("Expected %v, got %v (binary: %v\n", data.decimal, decimal, binary)
 	}
 }

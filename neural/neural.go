@@ -6,10 +6,6 @@ import (
   "fmt"
 )
 
-type Processor interface {
-  Process([]float64) []float64 
-}
-
 type Neuron struct {
   Weights []float64
   Bias float64
@@ -19,7 +15,7 @@ type Neuron struct {
   delta float64
 }
 
-func Build_Neuron(numInputs int) Neuron {
+func Build_Neuron(numInputs int) *Neuron {
   n := Neuron { 
     Weights: make([]float64, 0, numInputs),
     Bias: rand.Float64(),
@@ -29,7 +25,7 @@ func Build_Neuron(numInputs int) Neuron {
     n.Weights = append(n.Weights, rand.Float64())
   }
 
-  return n
+  return &n
 }
 
 func (n *Neuron) Process(inputs []float64) float64{
@@ -46,17 +42,17 @@ func (n *Neuron) Process(inputs []float64) float64{
 }
 
 type Layer struct {
-  Neurons []Neuron
+  Neurons []*Neuron
 }
 
-func Build_Layer(numNeurons int, numInputs int) Layer {
-  l := Layer{Neurons: make([]Neuron, 0, numNeurons)}
+func Build_Layer(numNeurons int, numInputs int) *Layer {
+  l := Layer{Neurons: make([]*Neuron, 0, numNeurons)}
 
   for i:= 0; i < cap(l.Neurons); i++ {
     l.Neurons = append(l.Neurons, Build_Neuron(numInputs))
   }
 
-  return l
+  return &l
 }
 
 func (l *Layer) Process(inputs []float64) []float64{
@@ -70,15 +66,15 @@ func (l *Layer) Process(inputs []float64) []float64{
 }
 
 type Network struct {
-  Layers []Layer
+  Layers []*Layer
   errorThreshold float64
   trainingIterations int
   learningRate float64
 }
 
-func Build_Network() Network {
-  return Network { 
-    Layers: make([]Layer, 0, 10),
+func Build_Network() *Network {
+  return &Network { 
+    Layers: make([]*Layer, 0, 10),
     errorThreshold: 0.00001,
     trainingIterations: 200000,
     learningRate: 0.03,
@@ -115,7 +111,7 @@ func (n *Network) Train(examples [][][]float64)  {
       outputs := n.Process(inputs)
 
       for i, _ := range outputLayer.Neurons {
-        neuron := &outputLayer.Neurons[i]
+        neuron := outputLayer.Neurons[i]
 
         neuron.error = targets[i] - outputs[i]
         neuron.delta = neuron.lastOutput * (1 - neuron.lastOutput) * neuron.error
@@ -123,7 +119,7 @@ func (n *Network) Train(examples [][][]float64)  {
 
       for l_index := len(n.Layers) - 2; l_index >= 0; l_index-- {
         for j, _:=  range n.Layers[l_index].Neurons {
-          neuron :=  &n.Layers[l_index].Neurons[j]
+          neuron :=  n.Layers[l_index].Neurons[j]
 
           var tmpError []float64
           for _, tmp_neuron := range n.Layers[l_index+1].Neurons {
@@ -133,7 +129,7 @@ func (n *Network) Train(examples [][][]float64)  {
           neuron.delta = neuron.lastOutput * (1 - neuron.lastOutput) * neuron.error
 
           for k, _ := range n.Layers[l_index+1].Neurons {
-            inner_neuron := &n.Layers[l_index+1].Neurons[k]
+            inner_neuron := n.Layers[l_index+1].Neurons[k]
 
             for w := 0; w < len(inner_neuron.Weights); w++  {
               inner_neuron.Weights[w] += n.learningRate * inner_neuron.lastInputs[w] * inner_neuron.delta

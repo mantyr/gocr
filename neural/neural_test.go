@@ -32,7 +32,7 @@ func testEq(a, b []float64) bool {
 var sizes = []int{1,2,5,9,13,20,21}
 
 func TestBuildNeuron(t *testing.T) {
-  var n Neuron
+  var n *Neuron
   for _, size := range sizes { 
     n = Build_Neuron(size)
 
